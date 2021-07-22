@@ -31,7 +31,7 @@ const Produtos = (connection: Sequelize) => {
             type: DataTypes.STRING(10),
             allowNull: false,
             validate: {
-                len: [2, 10]
+                len: [1, 10]
             }
         },
         valor: {

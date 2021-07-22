@@ -42,7 +42,7 @@ itensRouter.route('/:id').get(async (req, res) => {
         const itemFound: classItens = await itens.findByPk(req.params.id);
         response = {
             success: true,
-            cliente: itemFound
+            item: itemFound
         };
     } catch (reason) {
         response = {
@@ -65,7 +65,7 @@ itensRouter.route('/pedido/:pedido').post(async (req, res) => {
             const newItem = await itens.create({pedido: req.params.pedido, ...req.body});
             response = {
                 success: true,
-                cliente: newItem
+                item: newItem
             };
         }
     } catch (reason) {
@@ -89,12 +89,12 @@ itensRouter.route('/:id').put(async (req, res) => {
             await foundItem.update(req.body);
             response = {
                 success: true,
-                cliente: foundItem
+                item: foundItem
             };
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }
@@ -114,12 +114,12 @@ itensRouter.route('/:id').delete(async (req, res) => {
             await foundItem.destroy();
             response = {
                 success: true,
-                cliente: foundItem
+                item: foundItem
             };
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }
