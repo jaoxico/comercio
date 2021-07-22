@@ -12,7 +12,7 @@ pedidosRouter.route('/').get(async (req, res) => {
         const pedidosList: classPedidos[] = await pedidos.findAll();
         response = {
             success: true,
-            clientes: pedidosList
+            pedidos: pedidosList
         };
     } catch (reason) {
         response = {
@@ -29,7 +29,7 @@ pedidosRouter.route('/:id').get(async (req, res) => {
         const pedidoFound: classPedidos = await pedidos.findByPk(req.params.id);
         response = {
             success: true,
-            cliente: pedidoFound
+            pedido: pedidoFound
         };
     } catch (reason) {
         response = {
@@ -46,7 +46,7 @@ pedidosRouter.route('/').post(async (req, res) => {
         const newPedido = await pedidos.create(req.body);
         response = {
             success: true,
-            cliente: newPedido
+            pedido: newPedido
         };
     } catch (reason) {
         response = {
@@ -69,12 +69,12 @@ pedidosRouter.route('/:id').put(async (req, res) => {
             await foundPedido.update(req.body);
             response = {
                 success: true,
-                cliente: foundPedido
+                pedido: foundPedido
             };
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }
@@ -94,12 +94,12 @@ pedidosRouter.route('/:id').delete(async (req, res) => {
             await foundPedido.destroy();
             response = {
                 success: true,
-                cliente: foundPedido
+                pedido: foundPedido
             };
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }

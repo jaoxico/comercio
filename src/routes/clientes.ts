@@ -43,7 +43,6 @@ clientesRouter.route('/:id').get(async (req, res) => {
 clientesRouter.route('/').post(async (req, res) => {
     let response: IResponse;
     try {
-        console.log(JSON.stringify(req.body, null, 4));
         const newCliente = await clientes.create(req.body);
         response = {
             success: true,
@@ -75,7 +74,7 @@ clientesRouter.route('/:id').put(async (req, res) => {
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }
@@ -100,7 +99,7 @@ clientesRouter.route('/:id').delete(async (req, res) => {
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }

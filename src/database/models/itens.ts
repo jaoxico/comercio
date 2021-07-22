@@ -33,6 +33,10 @@ const Itens = (connection: Sequelize) => {
                 key: 'Codigo'
             },
             onDelete: 'restrict'
+        },
+        quantidade: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, {
         sequelize: connection,

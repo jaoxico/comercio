@@ -8,10 +8,10 @@ export interface IResponse {
     message?: string;
     clientes?: classClientes[];
     cliente?: classClientes;
-    produto?: classProdutos;
     produtos?: classProdutos[];
-    pedido?: classPedidos;
+    produto?: classProdutos;
     pedidos?: classPedidos[];
+    pedido?: classPedidos;
     itens?: classItens[];
     item?: classItens;
 }

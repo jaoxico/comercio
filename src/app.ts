@@ -27,12 +27,14 @@ const itens = Itens(connection);
 
 const database = async () => {
     try {
+
         await connection.authenticate();
         await clientes.sync();
         await produtos.sync();
         await pedidos.sync();
         await itens.sync();
     } catch (reason) {
+
         console.log(`Failed to connect or sync to database.
 ${JSON.stringify(reason, null, 4)}`);
         process.exit();

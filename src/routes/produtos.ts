@@ -12,7 +12,7 @@ produtosRouter.route('/').get(async (req, res) => {
         const produtosList: classProdutos[] = await produtos.findAll();
         response = {
             success: true,
-            clientes: produtosList
+            produtos: produtosList
         };
     } catch (reason) {
         response = {
@@ -29,7 +29,7 @@ produtosRouter.route('/:id').get(async (req, res) => {
         const produtoFound: classProdutos = await produtos.findByPk(req.params.id);
         response = {
             success: true,
-            cliente: produtoFound
+            produto: produtoFound
         };
     } catch (reason) {
         response = {
@@ -46,7 +46,7 @@ produtosRouter.route('/').post(async (req, res) => {
         const newProduto = await produtos.create(req.body);
         response = {
             success: true,
-            cliente: newProduto
+            produto: newProduto
         };
     } catch (reason) {
         response = {
@@ -69,12 +69,12 @@ produtosRouter.route('/:id').put(async (req, res) => {
             await foundProduto.update(req.body);
             response = {
                 success: true,
-                cliente: foundProduto
+                produto: foundProduto
             };
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }
@@ -94,12 +94,12 @@ produtosRouter.route('/:id').delete(async (req, res) => {
             await foundProduto.destroy();
             response = {
                 success: true,
-                cliente: foundProduto
+                produto: foundProduto
             };
         } catch (reaason) {
             response = {
                 success: false,
-                cliente: reaason
+                message: reaason
             };
         }
     }
