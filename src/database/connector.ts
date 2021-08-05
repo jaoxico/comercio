@@ -1,15 +1,16 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from 'sequelize';
+import { ConfigService } from '@nestjs/config';
 
-const Connector = (): Sequelize => {
-    return new Sequelize(
-        process.env.DATABASE,
-        process.env.DATABASE_USERNAME,
-        process.env.DATABASE_PASSWORD,
-        {
-            host: 'localhost',
-            dialect: 'mysql',
-            logging: false
-        }
-    );
+const Connector = (configService: ConfigService): Sequelize => {
+  return new Sequelize(
+    configService.get('DATABASE'),
+    configService.get('DATABASE_USERNAME'),
+    configService.get('DATABASE_PASSWORD'),
+    {
+      host: 'localhost',
+      dialect: 'mysql',
+      logging: false,
+    },
+  );
 };
 export default Connector;
