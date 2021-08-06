@@ -1,10 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from '../app.service';
-import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
 import { IResponse } from '../interfaces/response';
 import { PedidosController } from '../Controllers/pedidosController';
-import { PedidosDto } from '../dto/pedidos.dto';
 import { ItensController } from '../Controllers/itens.controller';
 import { ProdutosController } from '../Controllers/produtos.controller';
 import { ItensDto } from '../dto/itens.dto';
@@ -77,10 +75,7 @@ describe('ItensController', () => {
         produto: produto,
         quantidade: 1,
       };
-      const result: IResponse = await itensController.update(
-        codigo,
-        itemData,
-      );
+      const result: IResponse = await itensController.update(codigo, itemData);
       expect(result).toHaveProperty('success');
       expect(result).toHaveProperty('item');
     });
