@@ -14,7 +14,7 @@ import { ItensController } from './Controllers/itens.controller';
     }),
   ],
   controllers: [
-    ProdutosController,
+    ClientesController,
     ProdutosController,
     PedidosController,
     ItensController,

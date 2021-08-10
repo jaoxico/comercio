@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from '../app.service';
-import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
 import { IResponse } from '../interfaces/response';
-import { ClientesDto } from '../dto/clientes.dto';
 import { ProdutosController } from '../Controllers/produtos.controller';
 import { ProdutosDto } from '../dto/produtos.dto';
+import { classProdutos } from '../database/models/produtos';
 
 describe('ProdutosController', () => {
   let produtosController: ProdutosController;
@@ -27,58 +26,48 @@ describe('ProdutosController', () => {
   });
 
   describe('add', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto classProdutos', async () => {
       const newProduto: ProdutosDto = {
         nome: 'Teste automatizado',
         cor: 'preto',
         tamanho: 'P',
         valor: 100,
       };
-      const result: IResponse = await produtosController.add(newProduto);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('produto');
-      codigo = result.produto.getDataValue('codigo');
+      const result: classProdutos = await produtosController.add(newProduto);
+      codigo = result.getDataValue('codigo');
     });
   });
 
   describe('findAll', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await produtosController.findAll();
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('produtos');
+    it('O retorno deve ser um array de objetos classProdutos', async () => {
+      return await produtosController.findAll();
     });
   });
 
   describe('findOne', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await produtosController.findOne(codigo);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('produto');
+    it('O retorno deve ser um objeto classProdutos', async () => {
+      return await produtosController.findOne(codigo);
     });
   });
 
   describe('update', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto classProdutos', async () => {
       const produtoData: ProdutosDto = {
         nome: 'Teste automatizado alterado',
         cor: 'branco',
         tamanho: 'P',
         valor: 100,
       };
-      const result: IResponse = await produtosController.update(
+      return await produtosController.update(
         codigo,
         produtoData,
       );
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('produto');
     });
   });
 
   describe('delete', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await produtosController.delete(codigo);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('produto');
+    it('O retorno deve ser um objeto classProdutos', async () => {
+      return await produtosController.delete(codigo);
     });
   });
 });

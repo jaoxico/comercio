@@ -3,13 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
+  Logger,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import Connector from '../database/connector';
-import { IResponse } from '../interfaces/response';
 import { classPedidos, Pedidos } from '../database/models/pedidos';
 import { ConfigService } from '@nestjs/config';
 import { PedidosDto } from '../dto/pedidos.dto';
@@ -17,100 +19,90 @@ import { PedidosDto } from '../dto/pedidos.dto';
 @Controller('pedidos')
 export class PedidosController {
   protected pedidos;
+  private readonly logger = new Logger();
   constructor(private configService: ConfigService) {
     this.pedidos = Pedidos(Connector(this.configService));
   }
   @Get()
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<classPedidos[]> {
     try {
-      const pedidosList: classPedidos[] = await this.pedidos.findAll();
-      return {
-        success: true,
-        pedidos: pedidosList,
-      };
+      return await this.pedidos.findAll();
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca dos pedidos!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Get(':id')
-  async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<IResponse> {
+  async findOne(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<classPedidos> {
     try {
-      const pedidoFound: classPedidos = await this.pedidos.findByPk(id);
-      return {
-        success: true,
-        pedido: pedidoFound,
-      };
+      return await this.pedidos.findByPk(id);
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca do pedido!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Post()
-  async add(@Body() body: PedidosDto): Promise<IResponse> {
+  async add(@Body() body: PedidosDto): Promise<classPedidos> {
     try {
-      const newPedido = await this.pedidos.create(body);
-      return {
-        success: true,
-        pedido: newPedido,
-      };
+      return await this.pedidos.create(body);
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na creação do pedido.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Put(':id')
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: PedidosDto,
-  ): Promise<IResponse> {
+  ): Promise<classPedidos> {
     const foundPedido = await this.pedidos.findByPk(id);
     if (foundPedido === null)
-      return {
-        success: false,
-        message: 'Pedido não encontrado!',
-      };
+      throw new HttpException(
+        'Pedido não encontrado!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     else {
       try {
-        await foundPedido.update(body);
-        return {
-          success: true,
-          pedido: foundPedido,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
+        return await foundPedido.update(body);
+      } catch (reason) {
+        this.logger.error(reason);
+        throw new HttpException(
+          'Falha na alteração do pedido!',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
   }
   @Delete(':id')
-  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<IResponse> {
+  async delete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<classPedidos> {
     const foundPedido = await this.pedidos.findByPk(id);
     if (foundPedido === null)
-      return {
-        success: false,
-        message: 'Pedido não encontrado!',
-      };
+      throw new HttpException(
+        'Pedido não encontrado!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     else {
       try {
-        await foundPedido.destroy();
-        return {
-          success: true,
-          pedido: foundPedido,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
+        return await foundPedido.destroy();
+      } catch (reason) {
+        this.logger.error(reason);
+        throw new HttpException(
+          'Falha na exclusão do pedido!',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
   }

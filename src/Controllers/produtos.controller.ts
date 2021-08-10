@@ -3,119 +3,103 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
+  Logger,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import Connector from '../database/connector';
-import { IResponse } from '../interfaces/response';
 import { classProdutos, Produtos } from '../database/models/produtos';
 import { ConfigService } from '@nestjs/config';
 import { ProdutosDto } from '../dto/produtos.dto';
 
 @Controller('produtos')
 export class ProdutosController {
+  private logger = new Logger();
   protected produtos;
   constructor(private configService: ConfigService) {
     this.produtos = Produtos(Connector(this.configService));
   }
   @Get()
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<classProdutos[]> {
     try {
-      const produtosList: classProdutos[] = await this.produtos.findAll();
-      return {
-        success: true,
-        produtos: produtosList,
-      };
+      return await this.produtos.findAll();
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca dos produtos!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Get(':id')
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<IResponse> {
+  ): Promise<classProdutos> {
     try {
-      const produtoFound: classProdutos = await this.produtos.findByPk(id);
-      return {
-        success: true,
-        produto: produtoFound,
-      };
+      return await this.produtos.findByPk(id);
     } catch (reason) {
-      return {
-        success: false,
-        message: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca do produto!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Post()
-  async add(@Body() body: ProdutosDto): Promise<IResponse> {
+  async add(@Body() body: ProdutosDto): Promise<classProdutos> {
     try {
-      const newProduto = await this.produtos.create(body);
-      return {
-        success: true,
-        produto: newProduto,
-      };
+      return await this.produtos.create(body);
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na inclusão do produto!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Put(':id')
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: ProdutosDto,
-  ): Promise<IResponse> {
+  ): Promise<classProdutos> {
     const foundProduto = await this.produtos.findByPk(id);
     if (foundProduto === null)
-      return {
-        success: false,
-        message: 'Produto não encontrado!',
-      };
-    else {
-      try {
-        await foundProduto.update(body);
-        return {
-          success: true,
-          produto: foundProduto,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
-      }
+      throw new HttpException(
+        'Produto não encontrado!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    try {
+      return await foundProduto.update(body);
+    } catch (reason) {
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na alteração do produto!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Delete(':id')
   async delete(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<IResponse> {
+  ): Promise<classProdutos> {
     const foundProduto = await this.produtos.findByPk(id);
     if (foundProduto === null)
-      return {
-        success: false,
-        message: 'Produto não encontrado!',
-      };
-    else {
-      try {
-        await foundProduto.destroy();
-        return {
-          success: true,
-          produto: foundProduto,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
-      }
+      throw new HttpException(
+        'Produto não encontrado!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    try {
+      return await foundProduto.destroy();
+    } catch (reason) {
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na exclusão do produto!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

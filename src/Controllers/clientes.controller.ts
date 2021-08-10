@@ -3,6 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
+  Logger,
   Param,
   ParseUUIDPipe,
   Post,
@@ -13,106 +16,107 @@ import Connector from '../database/connector';
 import { IResponse } from '../interfaces/response';
 import { ConfigService } from '@nestjs/config';
 import { ClientesDto } from '../dto/clientes.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('clientes')
 export class ClientesController {
   protected clientes;
+  private readonly logger = new Logger();
   constructor(private configService: ConfigService) {
     this.clientes = Clientes(Connector(this.configService));
   }
   @Get()
-  async findAll(): Promise<IResponse> {
+  @ApiOkResponse({
+    description: 'Clientes encontrados',
+    type: [classClientes],
+  })
+  async findAll(): Promise<classClientes[]> {
     try {
-      const clientesList: classClientes[] = await this.clientes.findAll();
-      return {
-        success: true,
-        clientes: clientesList,
-      };
+      return await this.clientes.findAll();
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca dos clientes!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Get(':id')
+  @ApiOkResponse({
+    description: 'Cliente encontrado',
+    type: classClientes,
+  })
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<IResponse> {
+  ): Promise<classClientes> {
     try {
-      const clienteFound: classClientes = await this.clientes.findByPk(id);
-      return {
-        success: true,
-        cliente: clienteFound,
-      };
+      return await this.clientes.findByPk(id);
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca do cliente com o código: (' + id + ')',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Post()
-  async add(@Body() body: ClientesDto): Promise<IResponse> {
+  @ApiCreatedResponse({
+    description: 'Cliente cadastrado com sucesso.',
+    type: classClientes,
+  })
+  async add(@Body() body: ClientesDto): Promise<classClientes> {
     try {
-      const newCliente = await this.clientes.create(body);
-      return {
-        success: true,
-        cliente: newCliente,
-      };
+      return await this.clientes.create(body);
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha no cadastro do cliente',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Put(':id')
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: ClientesDto,
-  ): Promise<IResponse> {
+  ): Promise<classClientes> {
     const foundCliente = await this.clientes.findByPk(id);
     if (foundCliente === null)
-      return {
-        success: false,
-        message: 'Cliente não encontrado!',
-      };
+      throw new HttpException(
+        'Falha na busca do cliente com o código: (' + id + ')',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     else {
       try {
-        await foundCliente.update(body);
-        return {
-          success: true,
-          cliente: foundCliente,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
+        return await foundCliente.update(body);
+      } catch (reason) {
+        this.logger.error(reason);
+        throw new HttpException(
+          'Falha na alteração do cliente',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
   }
   @Delete(':id')
-  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<IResponse> {
+  async delete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<classClientes> {
     const foundCliente = await this.clientes.findByPk(id);
     if (foundCliente === null)
-      return {
-        success: false,
-        message: 'Cliente não encontrado!',
-      };
+      throw new HttpException(
+        'Falha na busca do cliente com o código: (' + id + ')',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     else {
       try {
-        await foundCliente.destroy();
-        return {
-          success: true,
-          cliente: foundCliente,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
+        return await foundCliente.destroy();
+      } catch (reason) {
+        this.logger.error(reason);
+        throw new HttpException(
+          'Falha na exclusão do cliente',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
   }

@@ -3,9 +3,9 @@ import { AppService } from '../app.service';
 import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
 import { IResponse } from '../interfaces/response';
-import { ClientesDto } from '../dto/clientes.dto';
 import { PedidosController } from '../Controllers/pedidosController';
 import { PedidosDto } from '../dto/pedidos.dto';
+import { classPedidos } from '../database/models/pedidos';
 
 describe('PedidosController', () => {
   let clientesController: ClientesController;
@@ -30,59 +30,49 @@ describe('PedidosController', () => {
   });
 
   describe('add', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      cliente = (await clientesController.findAll()).clientes[0].getDataValue('codigo');
+    it('O retorno deve ser um objeto classPedidos', async () => {
+      cliente = (await clientesController.findAll())[0].getDataValue('codigo');
       const newPedido: PedidosDto = {
         cliente,
         data: new Date(),
         observacao: '',
         pagamento: 'dinheiro',
       };
-      const result: IResponse = await pedidosController.add(newPedido);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('pedido');
-      codigo = result.pedido.getDataValue('codigo');
+      const result: classPedidos = await pedidosController.add(newPedido);
+      codigo = result.getDataValue('codigo');
     });
   });
 
   describe('findAll', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await pedidosController.findAll();
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('pedidos');
+    it('O retorno deve ser um objeto classPedidos', async () => {
+      await pedidosController.findAll();
     });
   });
 
   describe('findOne', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await pedidosController.findOne(codigo);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('pedido');
+    it('O retorno deve ser um objeto classPedidos', async () => {
+      await pedidosController.findOne(codigo);
     });
   });
 
   describe('update', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto classPedidos', async () => {
       const pedidoData: PedidosDto = {
         cliente,
         data: new Date(),
         observacao: 'Alterado',
         pagamento: 'dinheiro',
       };
-      const result: IResponse = await pedidosController.update(
+      await pedidosController.update(
         codigo,
         pedidoData,
       );
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('pedido');
     });
   });
 
   describe('delete', () => {
-    it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await pedidosController.delete(codigo);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('pedido');
+    it('O retorno deve ser um objeto classPedidos', async () => {
+      await pedidosController.delete(codigo);
     });
   });
 });

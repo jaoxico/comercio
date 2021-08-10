@@ -3,6 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
+  Logger,
   Param,
   ParseUUIDPipe,
   Post,
@@ -17,6 +20,7 @@ import { ItensDto } from '../dto/itens.dto';
 
 @Controller('itens')
 export class ItensController {
+  private logger = new Logger();
   protected itens;
   protected pedidos;
   protected connector;
@@ -26,123 +30,102 @@ export class ItensController {
     this.pedidos = Pedidos(this.connector);
   }
   @Get('pedido/:pedido')
-  async findAll(@Param('pedido', new ParseUUIDPipe()) pedido: string): Promise<IResponse> {
+  async findAll(
+    @Param('pedido', new ParseUUIDPipe()) pedido: string,
+  ): Promise<classItens[]> {
     try {
       const foundPedido: classPedidos = await this.pedidos.findByPk(pedido);
-      if (foundPedido === null)
-        return {
-          success: false,
-          message: `Pedido (${pedido}) não encontrado!`,
-        };
-      else {
-        const foundItensList: classItens[] = await this.itens.findAll({
-          where: {
-            pedido: foundPedido.getDataValue('codigo'),
-          },
-        });
-        return {
-          success: true,
-          itens: foundItensList,
-        };
+      if (foundPedido === null) {
+        const msg = `Pedido (${pedido}) não encontrado!`;
+        throw new HttpException(msg, HttpStatus.INTERNAL_SERVER_ERROR);
       }
+      return await this.itens.findAll({
+        where: {
+          pedido: foundPedido.getDataValue('codigo'),
+        },
+      });
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca dos itens!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Get(':id')
-  async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<IResponse> {
+  async findOne(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<classItens> {
     try {
-      const itemFound: classItens = await this.itens.findByPk(id);
-      return {
-        success: true,
-        item: itemFound,
-      };
+      return await this.itens.findByPk(id);
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na busca do item!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Post('pedido/:pedido')
   async add(
     @Param('pedido', new ParseUUIDPipe()) pedido: string,
     @Body() body: ItensDto,
-  ): Promise<IResponse> {
+  ): Promise<classItens> {
     try {
       const foundPedido: classPedidos = await this.pedidos.findByPk(pedido);
-      if (foundPedido === null)
-        return {
-          success: false,
-          message: `Pedido (${pedido}) não encontrado!`,
-        };
-      else {
-        const newItem = await this.itens.create({
-          pedido: pedido,
-          ...body,
-        });
-        return {
-          success: true,
-          item: newItem,
-        };
+      if (foundPedido === null) {
+        const msg = `Pedido (${pedido}) não encontrado!`;
+        throw new HttpException(msg, HttpStatus.INTERNAL_SERVER_ERROR);
       }
+      return await this.itens.create({
+        pedido: pedido,
+        ...body,
+      });
     } catch (reason) {
-      return {
-        success: false,
-        error: reason,
-      };
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na inclusão do item!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Put(':id')
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: ItensDto,
-  ): Promise<IResponse> {
+  ): Promise<classItens> {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
-      return {
-        success: false,
-        message: 'Ítem não encontrado!',
-      };
-    else {
-      try {
-        await foundItem.update(body);
-        return {
-          success: true,
-          item: foundItem,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
-      }
+      throw new HttpException(
+        'Ítem não encontrado',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    try {
+      return await foundItem.update(body);
+    } catch (reason) {
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na alteração do item!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Delete(':id')
   async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<IResponse> {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
-      return {
-        success: false,
-        message: 'Item não encontrado!',
-      };
-    else {
-      try {
-        await foundItem.destroy();
-        return {
-          success: true,
-          item: foundItem,
-        };
-      } catch (reaason) {
-        return {
-          success: false,
-          error: reaason,
-        };
-      }
+      throw new HttpException(
+        'Ítem não encontrado',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    try {
+      return await foundItem.destroy();
+    } catch (reason) {
+      this.logger.error(reason);
+      throw new HttpException(
+        'Falha na exclusão do item!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

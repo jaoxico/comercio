@@ -1,9 +1,8 @@
-import { classClientes } from '../database/models/clientes';
 import { classProdutos } from '../database/models/produtos';
 import { classPedidos } from '../database/models/pedidos';
 import { classItens } from '../database/models/itens';
-import { SequenceError } from 'rxjs';
 import { SequelizeScopeError } from 'sequelize';
+import { classClientes } from '../database/models/clientes';
 
 export interface IResponse {
   success: boolean;

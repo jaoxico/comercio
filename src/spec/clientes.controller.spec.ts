@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from '../app.service';
 import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
-import { IResponse } from '../interfaces/response';
 import { ClientesDto } from '../dto/clientes.dto';
+import { classClientes } from '../database/models/clientes';
 
 describe('ClientesController', () => {
   let clientesController: ClientesController;
@@ -25,33 +25,27 @@ describe('ClientesController', () => {
   });
 
   describe('add', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto classClientes', async () => {
       const newCliente: ClientesDto = {
         nome: 'Teste automatizado',
         cpf: '11111111111',
         sexo: 'M',
         email: 'joao@consultorweb.cnt.br',
       };
-      const result: IResponse = await clientesController.add(newCliente);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('cliente');
-      codigo = result.cliente.getDataValue('codigo');
+      const result: classClientes = await clientesController.add(newCliente);
+      codigo = result.getDataValue('codigo');
     });
   });
 
   describe('findAll', () => {
     it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await clientesController.findAll();
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('clientes');
+      await clientesController.findAll();
     });
   });
 
   describe('findOne', () => {
     it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await clientesController.findOne(codigo);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('cliente');
+      await clientesController.findOne(codigo);
     });
   });
 
@@ -63,20 +57,16 @@ describe('ClientesController', () => {
         sexo: 'M',
         email: 'joao@consultorweb.cnt.br',
       };
-      const result: IResponse = await clientesController.update(
+      await clientesController.update(
         codigo,
         clienteData,
       );
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('cliente');
     });
   });
 
   describe('delete', () => {
     it('O retorno deve ser um objeto Response', async () => {
-      const result: IResponse = await clientesController.delete(codigo);
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('cliente');
+      await clientesController.delete(codigo);
     });
   });
 });
