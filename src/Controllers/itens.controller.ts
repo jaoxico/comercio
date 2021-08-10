@@ -12,7 +12,6 @@ import {
   Put,
 } from '@nestjs/common';
 import Connector from '../database/connector';
-import { IResponse } from '../interfaces/response';
 import { classPedidos, Pedidos } from '../database/models/pedidos';
 import { classItens, Itens } from '../database/models/itens';
 import { ConfigService } from '@nestjs/config';
@@ -111,7 +110,9 @@ export class ItensController {
     }
   }
   @Delete(':id')
-  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<IResponse> {
+  async delete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<classItens> {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
       throw new HttpException(

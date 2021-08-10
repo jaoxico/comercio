@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { classClientes, Clientes } from '../database/models/clientes';
 import Connector from '../database/connector';
-import { IResponse } from '../interfaces/response';
 import { ConfigService } from '@nestjs/config';
 import { ClientesDto } from '../dto/clientes.dto';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';

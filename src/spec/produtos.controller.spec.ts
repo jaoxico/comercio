@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from '../app.service';
 import { ConfigModule } from '@nestjs/config';
-import { IResponse } from '../interfaces/response';
 import { ProdutosController } from '../Controllers/produtos.controller';
 import { ProdutosDto } from '../dto/produtos.dto';
 import { classProdutos } from '../database/models/produtos';

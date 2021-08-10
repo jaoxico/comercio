@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from '../app.service';
 import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
-import { IResponse } from '../interfaces/response';
 import { PedidosController } from '../Controllers/pedidosController';
 import { PedidosDto } from '../dto/pedidos.dto';
 import { classPedidos } from '../database/models/pedidos';
