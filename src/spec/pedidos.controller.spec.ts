@@ -62,10 +62,7 @@ describe('PedidosController', () => {
         observacao: 'Alterado',
         pagamento: 'dinheiro',
       };
-      await pedidosController.update(
-        codigo,
-        pedidoData,
-      );
+      await pedidosController.update(codigo, pedidoData);
     });
   });
 

@@ -57,10 +57,7 @@ describe('ProdutosController', () => {
         tamanho: 'P',
         valor: 100,
       };
-      return await produtosController.update(
-        codigo,
-        produtoData,
-      );
+      return await produtosController.update(codigo, produtoData);
     });
   });
 

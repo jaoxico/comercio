@@ -57,10 +57,7 @@ describe('ClientesController', () => {
         sexo: 'M',
         email: 'joao@consultorweb.cnt.br',
       };
-      await clientesController.update(
-        codigo,
-        clienteData,
-      );
+      await clientesController.update(codigo, clienteData);
     });
   });
 
