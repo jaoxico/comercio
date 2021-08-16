@@ -5,7 +5,7 @@ import { PedidosController } from '../Controllers/pedidosController';
 import { ItensController } from '../Controllers/itens.controller';
 import { ProdutosController } from '../Controllers/produtos.controller';
 import { ItensDto } from '../dto/itens.dto';
-import { classItens } from '../database/models/itens';
+import { iItem } from '../interfaces/iItem';
 
 describe('ItensController', () => {
   let produtosController: ProdutosController;
@@ -34,15 +34,15 @@ describe('ItensController', () => {
 
   describe('add', () => {
     it('O retorno deve ser um objeto classItens', async () => {
-      pedido = (await pedidosController.findAll())[0].getDataValue('codigo');
-      produto = (await produtosController.findAll())[0].getDataValue('codigo');
+      pedido = (await pedidosController.findAll())[0].codigo;
+      produto = (await produtosController.findAll())[0].codigo;
       const newItem: ItensDto = {
         pedido: pedido,
         produto: produto,
         quantidade: 10,
       };
-      const result: classItens = await itensController.add(pedido, newItem);
-      codigo = result.getDataValue('codigo');
+      const result: iItem = await itensController.add(pedido, newItem);
+      codigo = result.codigo;
     });
   });
 

@@ -4,7 +4,7 @@ import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
 import { PedidosController } from '../Controllers/pedidosController';
 import { PedidosDto } from '../dto/pedidos.dto';
-import { classPedidos } from '../database/models/pedidos';
+import { iPedido } from '../interfaces/iPedido';
 
 describe('PedidosController', () => {
   let clientesController: ClientesController;
@@ -30,15 +30,15 @@ describe('PedidosController', () => {
 
   describe('add', () => {
     it('O retorno deve ser um objeto classPedidos', async () => {
-      cliente = (await clientesController.findAll())[0].getDataValue('codigo');
+      cliente = (await clientesController.findAll())[0].codigo;
       const newPedido: PedidosDto = {
         cliente,
         data: new Date(),
         observacao: '',
         pagamento: 'dinheiro',
       };
-      const result: classPedidos = await pedidosController.add(newPedido);
-      codigo = result.getDataValue('codigo');
+      const result: iPedido = await pedidosController.add(newPedido);
+      codigo = result.codigo;
     });
   });
 

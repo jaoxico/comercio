@@ -3,7 +3,7 @@ import { AppService } from '../app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ProdutosController } from '../Controllers/produtos.controller';
 import { ProdutosDto } from '../dto/produtos.dto';
-import { classProdutos } from '../database/models/produtos';
+import { IProduto } from '../interfaces/iProduto';
 
 describe('ProdutosController', () => {
   let produtosController: ProdutosController;
@@ -32,8 +32,8 @@ describe('ProdutosController', () => {
         tamanho: 'P',
         valor: 100,
       };
-      const result: classProdutos = await produtosController.add(newProduto);
-      codigo = result.getDataValue('codigo');
+      const result: IProduto = await produtosController.add(newProduto);
+      codigo = result.codigo;
     });
   });
 
