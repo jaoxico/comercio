@@ -1,15 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DataTypes } from 'sequelize';
 
 export class ClientesDto {
   @ApiProperty({
-    description: 'Código do cliente',
-    type: DataTypes.UUIDV4,
-  })
-  codigo?: string;
-  @ApiProperty({
     description: 'Nome do cliente',
-    type: DataTypes.STRING,
+    type: String,
     required: true,
     minLength: 4,
     maxLength: 50,
@@ -18,20 +12,20 @@ export class ClientesDto {
   @ApiProperty({
     description: 'CPF do cliente',
     required: true,
-    type: DataTypes.STRING,
+    type: String,
     pattern: '99999999999',
   })
   cpf: string;
   @ApiProperty({
     description: 'Sexo (M -> Masculino, F -> Feminino',
     required: true,
-    type: DataTypes.STRING,
-    enum: ['M', 'F'],
+    type: String,
   })
   sexo: 'M' | 'F';
   @ApiProperty({
     description: 'E-mail',
-    type: DataTypes.STRING,
+    type: String,
+    required: true,
     maxLength: 255,
   })
   email: string;

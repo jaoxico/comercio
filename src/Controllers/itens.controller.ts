@@ -12,10 +12,13 @@ import {
   Put,
 } from '@nestjs/common';
 import Connector from '../database/connector';
-import { classPedidos, Pedidos } from '../database/models/pedidos';
-import { classItens, Itens } from '../database/models/itens';
+import { Pedidos } from '../database/models/pedidos';
+import { Itens } from '../database/models/itens';
 import { ConfigService } from '@nestjs/config';
 import { ItensDto } from '../dto/itens.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { iItem } from '../interfaces/iItem';
+import { iPedido } from '../interfaces/iPedido';
 
 @Controller('itens')
 export class ItensController {
@@ -29,18 +32,22 @@ export class ItensController {
     this.pedidos = Pedidos(this.connector);
   }
   @Get('pedido/:pedido')
+  @ApiOkResponse({
+    description: 'Itens encontrados',
+    type: [iItem],
+  })
   async findAll(
     @Param('pedido', new ParseUUIDPipe()) pedido: string,
-  ): Promise<classItens[]> {
+  ): Promise<iItem[]> {
     try {
-      const foundPedido: classPedidos = await this.pedidos.findByPk(pedido);
+      const foundPedido: iPedido = await this.pedidos.findByPk(pedido);
       if (foundPedido === null) {
         const msg = `Pedido (${pedido}) não encontrado!`;
         throw new HttpException(msg, HttpStatus.INTERNAL_SERVER_ERROR);
       }
       return await this.itens.findAll({
         where: {
-          pedido: foundPedido.getDataValue('codigo'),
+          pedido: pedido,
         },
       });
     } catch (reason) {
@@ -52,9 +59,11 @@ export class ItensController {
     }
   }
   @Get(':id')
-  async findOne(
-    @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classItens> {
+  @ApiOkResponse({
+    description: 'Ítem encontrado',
+    type: iItem,
+  })
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<iItem> {
     try {
       return await this.itens.findByPk(id);
     } catch (reason) {
@@ -66,12 +75,16 @@ export class ItensController {
     }
   }
   @Post('pedido/:pedido')
+  @ApiCreatedResponse({
+    description: 'Ítem cadastrado com sucesso.',
+    type: iItem,
+  })
   async add(
     @Param('pedido', new ParseUUIDPipe()) pedido: string,
     @Body() body: ItensDto,
-  ): Promise<classItens> {
+  ): Promise<iItem> {
     try {
-      const foundPedido: classPedidos = await this.pedidos.findByPk(pedido);
+      const foundPedido: iPedido = await this.pedidos.findByPk(pedido);
       if (foundPedido === null) {
         const msg = `Pedido (${pedido}) não encontrado!`;
         throw new HttpException(msg, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -89,10 +102,14 @@ export class ItensController {
     }
   }
   @Put(':id')
+  @ApiCreatedResponse({
+    description: 'Ítem atualizado com sucesso.',
+    type: iItem,
+  })
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: ItensDto,
-  ): Promise<classItens> {
+  ): Promise<iItem> {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
       throw new HttpException(
@@ -110,9 +127,11 @@ export class ItensController {
     }
   }
   @Delete(':id')
-  async delete(
-    @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classItens> {
+  @ApiCreatedResponse({
+    description: 'Ítem excluído com sucesso.',
+    type: iItem,
+  })
+  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<iItem> {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
       throw new HttpException(

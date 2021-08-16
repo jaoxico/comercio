@@ -1,10 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ItensDto {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Código do pedido',
+    required: true,
+    type: String,
+  })
   pedido: string;
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Código do produto',
+    required: true,
+    type: String,
+  })
   produto: string;
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Quantidade',
+    required: true,
+    type: Number,
+  })
   quantidade: number;
 }

@@ -15,6 +15,9 @@ import Connector from '../database/connector';
 import { classPedidos, Pedidos } from '../database/models/pedidos';
 import { ConfigService } from '@nestjs/config';
 import { PedidosDto } from '../dto/pedidos.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { iCliente } from '../interfaces/ICliente';
+import { iPedido } from '../interfaces/iPedido';
 
 @Controller('pedidos')
 export class PedidosController {
@@ -24,7 +27,11 @@ export class PedidosController {
     this.pedidos = Pedidos(Connector(this.configService));
   }
   @Get()
-  async findAll(): Promise<classPedidos[]> {
+  @ApiOkResponse({
+    description: 'Pedidos encontrados',
+    type: [iPedido],
+  })
+  async findAll(): Promise<iPedido[]> {
     try {
       return await this.pedidos.findAll();
     } catch (reason) {
@@ -36,9 +43,13 @@ export class PedidosController {
     }
   }
   @Get(':id')
+  @ApiOkResponse({
+    description: 'Pedido encontrado',
+    type: iPedido,
+  })
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classPedidos> {
+  ): Promise<iPedido> {
     try {
       return await this.pedidos.findByPk(id);
     } catch (reason) {
@@ -50,7 +61,11 @@ export class PedidosController {
     }
   }
   @Post()
-  async add(@Body() body: PedidosDto): Promise<classPedidos> {
+  @ApiCreatedResponse({
+    description: 'Pedido cadastrado com sucesso.',
+    type: iPedido,
+  })
+  async add(@Body() body: PedidosDto): Promise<iPedido> {
     try {
       return await this.pedidos.create(body);
     } catch (reason) {
@@ -62,10 +77,14 @@ export class PedidosController {
     }
   }
   @Put(':id')
+  @ApiCreatedResponse({
+    description: 'Pedido atualizado com sucesso.',
+    type: iPedido,
+  })
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: PedidosDto,
-  ): Promise<classPedidos> {
+  ): Promise<iPedido> {
     const foundPedido = await this.pedidos.findByPk(id);
     if (foundPedido === null)
       throw new HttpException(
@@ -85,9 +104,13 @@ export class PedidosController {
     }
   }
   @Delete(':id')
+  @ApiCreatedResponse({
+    description: 'Pedido excluído com sucesso.',
+    type: iPedido,
+  })
   async delete(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classPedidos> {
+  ): Promise<iPedido> {
     const foundPedido = await this.pedidos.findByPk(id);
     if (foundPedido === null)
       throw new HttpException(

@@ -15,6 +15,9 @@ import Connector from '../database/connector';
 import { classProdutos, Produtos } from '../database/models/produtos';
 import { ConfigService } from '@nestjs/config';
 import { ProdutosDto } from '../dto/produtos.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { IProduto } from '../interfaces/iProduto';
+import { iCliente } from '../interfaces/ICliente';
 
 @Controller('produtos')
 export class ProdutosController {
@@ -24,7 +27,11 @@ export class ProdutosController {
     this.produtos = Produtos(Connector(this.configService));
   }
   @Get()
-  async findAll(): Promise<classProdutos[]> {
+  @ApiOkResponse({
+    description: 'Produtos encontrados',
+    type: [IProduto],
+  })
+  async findAll(): Promise<IProduto[]> {
     try {
       return await this.produtos.findAll();
     } catch (reason) {
@@ -36,9 +43,13 @@ export class ProdutosController {
     }
   }
   @Get(':id')
+  @ApiOkResponse({
+    description: 'Produto encontrado',
+    type: IProduto,
+  })
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classProdutos> {
+  ): Promise<IProduto> {
     try {
       return await this.produtos.findByPk(id);
     } catch (reason) {
@@ -50,7 +61,11 @@ export class ProdutosController {
     }
   }
   @Post()
-  async add(@Body() body: ProdutosDto): Promise<classProdutos> {
+  @ApiCreatedResponse({
+    description: 'Produto cadastrado com sucesso.',
+    type: IProduto,
+  })
+  async add(@Body() body: ProdutosDto): Promise<IProduto> {
     try {
       return await this.produtos.create(body);
     } catch (reason) {
@@ -62,10 +77,14 @@ export class ProdutosController {
     }
   }
   @Put(':id')
+  @ApiCreatedResponse({
+    description: 'Produto atualizado com sucesso.',
+    type: IProduto,
+  })
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: ProdutosDto,
-  ): Promise<classProdutos> {
+  ): Promise<IProduto> {
     const foundProduto = await this.produtos.findByPk(id);
     if (foundProduto === null)
       throw new HttpException(
@@ -83,9 +102,13 @@ export class ProdutosController {
     }
   }
   @Delete(':id')
+  @ApiCreatedResponse({
+    description: 'Produto excluído com sucesso.',
+    type: IProduto,
+  })
   async delete(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classProdutos> {
+  ): Promise<IProduto> {
     const foundProduto = await this.produtos.findByPk(id);
     if (foundProduto === null)
       throw new HttpException(

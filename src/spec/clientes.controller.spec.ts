@@ -3,7 +3,7 @@ import { AppService } from '../app.service';
 import { ClientesController } from '../Controllers/clientes.controller';
 import { ConfigModule } from '@nestjs/config';
 import { ClientesDto } from '../dto/clientes.dto';
-import { classClientes } from '../database/models/clientes';
+import { iCliente } from '../interfaces/ICliente';
 
 describe('ClientesController', () => {
   let clientesController: ClientesController;
@@ -25,32 +25,32 @@ describe('ClientesController', () => {
   });
 
   describe('add', () => {
-    it('O retorno deve ser um objeto classClientes', async () => {
+    it('O retorno deve ser um objeto iClientes', async () => {
       const newCliente: ClientesDto = {
         nome: 'Teste automatizado',
         cpf: '11111111111',
         sexo: 'M',
         email: 'joao@consultorweb.cnt.br',
       };
-      const result: classClientes = await clientesController.add(newCliente);
-      codigo = result.getDataValue('codigo');
+      const result: iCliente = await clientesController.add(newCliente);
+      codigo = result.codigo;
     });
   });
 
   describe('findAll', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto iCliente', async () => {
       await clientesController.findAll();
     });
   });
 
   describe('findOne', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto iCliente', async () => {
       await clientesController.findOne(codigo);
     });
   });
 
   describe('update', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto iCliente', async () => {
       const clienteData: ClientesDto = {
         nome: 'Teste automatizado alterado',
         cpf: '11111111111',
@@ -62,7 +62,7 @@ describe('ClientesController', () => {
   });
 
   describe('delete', () => {
-    it('O retorno deve ser um objeto Response', async () => {
+    it('O retorno deve ser um objeto iCliente', async () => {
       await clientesController.delete(codigo);
     });
   });

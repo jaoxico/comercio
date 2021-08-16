@@ -3,13 +3,8 @@ import { DataTypes } from 'sequelize';
 
 export class ProdutosDto {
   @ApiProperty({
-    description: 'Código do produto',
-    type: DataTypes.UUIDV4,
-  })
-  codigo?: string;
-  @ApiProperty({
     description: 'Nome do produto',
-    type: DataTypes.STRING,
+    type: String,
     required: true,
     minLength: 4,
     maxLength: 50,
@@ -17,21 +12,21 @@ export class ProdutosDto {
   nome: string;
   @ApiProperty({
     description: 'Cor do produto',
-    type: DataTypes.STRING,
+    type: String,
     required: true,
     maxLength: 20,
   })
   cor: string;
   @ApiProperty({
     description: 'Tamanho do produto',
-    type: DataTypes.STRING,
+    type: String,
     required: true,
     maxLength: 10,
   })
   tamanho: string;
   @ApiProperty({
     description: 'Preco do produto',
-    type: DataTypes.NUMBER,
+    type: Number,
     required: true,
   })
   valor: number;

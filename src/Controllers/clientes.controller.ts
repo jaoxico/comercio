@@ -11,11 +11,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { classClientes, Clientes } from '../database/models/clientes';
+import { Clientes } from '../database/models/clientes';
 import Connector from '../database/connector';
 import { ConfigService } from '@nestjs/config';
 import { ClientesDto } from '../dto/clientes.dto';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { iCliente } from '../interfaces/ICliente';
 
 @Controller('clientes')
 export class ClientesController {
@@ -27,9 +28,9 @@ export class ClientesController {
   @Get()
   @ApiOkResponse({
     description: 'Clientes encontrados',
-    type: [classClientes],
+    type: [iCliente],
   })
-  async findAll(): Promise<classClientes[]> {
+  async findAll(): Promise<iCliente[]> {
     try {
       return await this.clientes.findAll();
     } catch (reason) {
@@ -43,11 +44,11 @@ export class ClientesController {
   @Get(':id')
   @ApiOkResponse({
     description: 'Cliente encontrado',
-    type: classClientes,
+    type: iCliente,
   })
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classClientes> {
+  ): Promise<iCliente> {
     try {
       return await this.clientes.findByPk(id);
     } catch (reason) {
@@ -61,9 +62,9 @@ export class ClientesController {
   @Post()
   @ApiCreatedResponse({
     description: 'Cliente cadastrado com sucesso.',
-    type: classClientes,
+    type: iCliente,
   })
-  async add(@Body() body: ClientesDto): Promise<classClientes> {
+  async add(@Body() body: ClientesDto): Promise<iCliente> {
     try {
       return await this.clientes.create(body);
     } catch (reason) {
@@ -75,10 +76,14 @@ export class ClientesController {
     }
   }
   @Put(':id')
+  @ApiCreatedResponse({
+    description: 'Cliente atualizado com sucesso.',
+    type: iCliente,
+  })
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: ClientesDto,
-  ): Promise<classClientes> {
+  ): Promise<iCliente> {
     const foundCliente = await this.clientes.findByPk(id);
     if (foundCliente === null)
       throw new HttpException(
@@ -98,9 +103,13 @@ export class ClientesController {
     }
   }
   @Delete(':id')
+  @ApiCreatedResponse({
+    description: 'Cliente excluído com sucesso.',
+    type: iCliente,
+  })
   async delete(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<classClientes> {
+  ): Promise<iCliente> {
     const foundCliente = await this.clientes.findByPk(id);
     if (foundCliente === null)
       throw new HttpException(
