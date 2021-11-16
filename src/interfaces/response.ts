@@ -1,4 +1,4 @@
-import {classClientes} from "../database/models/clientes";
+import {classClientes} from "../database/models/modelClientes";
 import {classProdutos} from "../database/models/produtos";
 import {classPedidos} from "../database/models/pedidos";
 import {classItens} from "../database/models/itens";

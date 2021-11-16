@@ -1,9 +1,9 @@
 import { Router } from "express";
-import Connector from "../database/connector";
+import connector from "../database/connector";
 import {IResponse} from "../interfaces/response";
 import {classProdutos, Produtos} from "../database/models/produtos";
 
-const produtos = Produtos(Connector());
+const produtos = Produtos(connector());
 const produtosRouter = Router();
 
 produtosRouter.route('/').get(async (req, res) => {

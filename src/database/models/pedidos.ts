@@ -1,15 +1,15 @@
 import {DataTypes, Model, NOW, Sequelize, UUIDV4} from "sequelize";
-import {Clientes} from "./clientes";
+import {modelClientes} from "./modelClientes";
 
 class classPedidos extends Model {}
 
 const Pedidos = (connection: Sequelize) => {
 
-    const clientes = Clientes(connection);
+    const clientes = modelClientes(connection);
 
     classPedidos.init(
         {
-            "codigo": {
+            "code": {
                 "defaultValue": UUIDV4,
                 "primaryKey": true,
                 "type": DataTypes.UUID,
@@ -45,7 +45,7 @@ const Pedidos = (connection: Sequelize) => {
                 "type": DataTypes.UUID,
                 "references": {
                     "model": clientes,
-                    "key": "Codigo"
+                    "key": "Code"
                 },
                 "onDelete": "restrict"
             }

@@ -10,7 +10,7 @@ const Itens = (connection: Sequelize) => {
     const produtos = Produtos(connection);
 
     classItens.init({
-        codigo: {
+        code: {
             type: DataTypes.UUID,
             defaultValue: UUIDV4,
             primaryKey: true,
@@ -22,7 +22,7 @@ const Itens = (connection: Sequelize) => {
             type: DataTypes.UUID,
             references: {
                 model: pedidos,
-                key: 'Codigo'
+                key: 'Code'
             },
             onDelete: 'restrict'
         },
@@ -30,7 +30,7 @@ const Itens = (connection: Sequelize) => {
             type: DataTypes.UUID,
             references: {
                 model: produtos,
-                key: 'Codigo'
+                key: 'Code'
             },
             onDelete: 'restrict'
         },

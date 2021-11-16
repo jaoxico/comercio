@@ -5,7 +5,7 @@ class classProdutos extends Model {}
 const Produtos = (connection: Sequelize) => {
 
     classProdutos.init({
-        codigo: {
+        code: {
             type: DataTypes.UUID,
             defaultValue: UUIDV4,
             primaryKey: true,

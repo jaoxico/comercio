@@ -1,9 +1,9 @@
 import { Router } from "express";
-import Connector from "../database/connector";
-import {classClientes, Clientes} from "../database/models/clientes";
+import connector from "../database/connector";
+import {classClientes, modelClientes} from "../database/models/modelClientes";
 import {IResponse} from "../interfaces/response";
 
-const clientes = Clientes(Connector());
+const clientes = modelClientes(connector());
 const clientesRouter = Router();
 
 clientesRouter.route('/').get(async (req, res) => {
