@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
 
 const Connector = (configService: ConfigService): Sequelize => {
-  return new Sequelize(
+  const sequelize = new Sequelize(
     configService.get('DATABASE'),
     configService.get('DATABASE_USERNAME'),
     configService.get('DATABASE_PASSWORD'),
@@ -12,5 +12,9 @@ const Connector = (configService: ConfigService): Sequelize => {
       logging: false,
     },
   );
+  sequelize.sync({ logging: false }).then(() => {
+    console.log('Sync done.');
+  });
+  return sequelize;
 };
 export default Connector;
