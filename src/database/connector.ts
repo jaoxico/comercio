@@ -9,7 +9,7 @@ const Connector = (configService: ConfigService): Sequelize => {
     {
       host: 'localhost',
       dialect: 'mysql',
-      logging: false,
+      logging: console.log,
     },
   );
   sequelize.sync({ logging: false }).then(() => {
