@@ -5,7 +5,7 @@ class classClientes extends Model {}
 const Clientes = (connection: Sequelize) => {
   classClientes.init(
     {
-      codigo: {
+      code: {
         type: DataTypes.UUID,
         defaultValue: UUIDV4,
         validate: {

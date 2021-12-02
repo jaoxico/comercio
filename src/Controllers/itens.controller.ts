@@ -31,6 +31,7 @@ export class ItensController {
     this.itens = Itens(this.connector);
     this.pedidos = Pedidos(this.connector);
   }
+
   @Get('pedido/:pedido')
   @ApiOkResponse({
     description: 'Itens encontrados',
@@ -113,7 +114,7 @@ export class ItensController {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
       throw new HttpException(
-        'Ítem não encontrado',
+        'Item não encontrado',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     try {
@@ -135,7 +136,7 @@ export class ItensController {
     const foundItem = await this.itens.findByPk(id);
     if (foundItem === null)
       throw new HttpException(
-        'Ítem não encontrado',
+        'Item não encontrado',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     try {

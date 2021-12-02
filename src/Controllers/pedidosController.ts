@@ -12,11 +12,10 @@ import {
   Put,
 } from '@nestjs/common';
 import Connector from '../database/connector';
-import { classPedidos, Pedidos } from '../database/models/pedidos';
+import { Pedidos } from '../database/models/pedidos';
 import { ConfigService } from '@nestjs/config';
 import { PedidosDto } from '../dto/pedidos.dto';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { iCliente } from '../interfaces/ICliente';
 import { iPedido } from '../interfaces/iPedido';
 
 @Controller('pedidos')
@@ -26,6 +25,7 @@ export class PedidosController {
   constructor(private configService: ConfigService) {
     this.pedidos = Pedidos(Connector(this.configService));
   }
+
   @Get()
   @ApiOkResponse({
     description: 'Pedidos encontrados',

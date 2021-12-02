@@ -7,5 +7,5 @@ export class IProduto extends ProdutosDto {
     description: 'Código do produto',
     type: String,
   })
-  codigo: string;
+  code: string;
 }

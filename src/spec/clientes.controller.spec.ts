@@ -7,14 +7,14 @@ import { iCliente } from '../interfaces/ICliente';
 
 describe('ClientesController', () => {
   let clientesController: ClientesController;
-  let codigo: string;
+  let code: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const clientes: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `.env/.dev`,
+          envFilePath: `.env/.${process.env.ENVIRONMENT}`,
         }),
       ],
       controllers: [ClientesController],
@@ -33,7 +33,7 @@ describe('ClientesController', () => {
         email: 'joao@consultorweb.cnt.br',
       };
       const result: iCliente = await clientesController.add(newCliente);
-      codigo = result.codigo;
+      code = result.code;
     });
   });
 
@@ -45,7 +45,7 @@ describe('ClientesController', () => {
 
   describe('findOne', () => {
     it('O retorno deve ser um objeto iCliente', async () => {
-      await clientesController.findOne(codigo);
+      await clientesController.findOne(code);
     });
   });
 
@@ -57,13 +57,13 @@ describe('ClientesController', () => {
         sexo: 'M',
         email: 'joao@consultorweb.cnt.br',
       };
-      await clientesController.update(codigo, clienteData);
+      await clientesController.update(code, clienteData);
     });
   });
 
   describe('delete', () => {
     it('O retorno deve ser um objeto iCliente', async () => {
-      await clientesController.delete(codigo);
+      await clientesController.delete(code);
     });
   });
 });

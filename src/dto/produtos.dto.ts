@@ -25,7 +25,7 @@ export class ProdutosDto {
   })
   tamanho: string;
   @ApiProperty({
-    description: 'Preco do produto',
+    description: 'Preço do produto',
     type: Number,
     required: true,
   })

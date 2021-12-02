@@ -8,5 +8,5 @@ export class iPedido extends PedidosDto {
     required: true,
     type: String,
   })
-  codigo?: string;
+  code?: string;
 }

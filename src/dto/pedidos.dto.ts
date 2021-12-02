@@ -13,7 +13,7 @@ export class PedidosDto {
     description: 'Observações',
     type: String,
   })
-  observacao: string;
+  obs: string;
   @ApiProperty({
     description: 'Forma de pagamento.',
     required: true,

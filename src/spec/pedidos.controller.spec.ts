@@ -5,19 +5,22 @@ import { ConfigModule } from '@nestjs/config';
 import { PedidosController } from '../Controllers/pedidosController';
 import { PedidosDto } from '../dto/pedidos.dto';
 import { iPedido } from '../interfaces/iPedido';
+import { iCliente } from '../interfaces/ICliente';
+import { Logger } from '@nestjs/common';
 
 describe('PedidosController', () => {
   let clientesController: ClientesController;
   let pedidosController: PedidosController;
-  let codigo: string;
+  let code: string;
   let cliente: string;
+  let clientes: iCliente[];
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const pedidos: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `.env/.dev`,
+          envFilePath: `.env/.${process.env.ENVIRONMENT}`,
         }),
       ],
       controllers: [PedidosController, ClientesController],
@@ -30,15 +33,20 @@ describe('PedidosController', () => {
 
   describe('add', () => {
     it('O retorno deve ser um objeto classPedidos', async () => {
-      cliente = (await clientesController.findAll())[0].codigo;
+      clientes = await clientesController.findAll();
+      if (clientes.length === 0) {
+        Logger.debug('Nenhum cliente encontrado.');
+        return;
+      }
+
       const newPedido: PedidosDto = {
         cliente,
         data: new Date(),
-        observacao: '',
+        obs: '',
         pagamento: 'dinheiro',
       };
       const result: iPedido = await pedidosController.add(newPedido);
-      codigo = result.codigo;
+      code = result.code;
     });
   });
 
@@ -50,25 +58,34 @@ describe('PedidosController', () => {
 
   describe('findOne', () => {
     it('O retorno deve ser um objeto classPedidos', async () => {
-      await pedidosController.findOne(codigo);
+      if (!code) {
+        return;
+      }
+      await pedidosController.findOne(code);
     });
   });
 
   describe('update', () => {
     it('O retorno deve ser um objeto classPedidos', async () => {
+      if (!code) {
+        return;
+      }
       const pedidoData: PedidosDto = {
         cliente,
         data: new Date(),
-        observacao: 'Alterado',
+        obs: 'Alterado',
         pagamento: 'dinheiro',
       };
-      await pedidosController.update(codigo, pedidoData);
+      await pedidosController.update(code, pedidoData);
     });
   });
 
   describe('delete', () => {
+    if (!code) {
+      return;
+    }
     it('O retorno deve ser um objeto classPedidos', async () => {
-      await pedidosController.delete(codigo);
+      await pedidosController.delete(code);
     });
   });
 });

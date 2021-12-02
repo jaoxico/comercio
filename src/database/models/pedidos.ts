@@ -8,7 +8,7 @@ const Pedidos = (connection: Sequelize) => {
 
   classPedidos.init(
     {
-      codigo: {
+      code: {
         defaultValue: UUIDV4,
         primaryKey: true,
         type: DataTypes.UUID,
@@ -20,7 +20,7 @@ const Pedidos = (connection: Sequelize) => {
         type: DataTypes.DATE,
         defaultValue: NOW,
       },
-      observacao: {
+      obs: {
         type: DataTypes.TEXT,
       },
       pagamento: {
@@ -34,7 +34,7 @@ const Pedidos = (connection: Sequelize) => {
         type: DataTypes.UUID,
         references: {
           model: clientes,
-          key: 'Codigo',
+          key: 'code',
         },
         onDelete: 'restrict',
       },

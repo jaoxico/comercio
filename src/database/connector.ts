@@ -26,7 +26,7 @@ const Connector = (configService: ConfigService): Sequelize => {
     {
       host: 'localhost',
       dialect: 'mysql',
-      logging: console.log,
+      logging: false,
     },
   );
   sequelize

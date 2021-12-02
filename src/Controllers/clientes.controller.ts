@@ -25,6 +25,7 @@ export class ClientesController {
   constructor(private configService: ConfigService) {
     this.clientes = Clientes(Connector(this.configService));
   }
+
   @Get()
   @ApiOkResponse({
     description: 'Clientes encontrados',

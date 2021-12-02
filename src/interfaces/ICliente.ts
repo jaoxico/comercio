@@ -6,5 +6,5 @@ export class iCliente extends ClientesDto {
     description: 'Código do cliente',
     type: String,
   })
-  codigo: string;
+  code: string;
 }

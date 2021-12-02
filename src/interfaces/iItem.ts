@@ -7,5 +7,5 @@ export class iItem extends ItensDto {
     required: true,
     type: String,
   })
-  codigo: string;
+  code: string;
 }

@@ -7,14 +7,14 @@ import { IProduto } from '../interfaces/iProduto';
 
 describe('ProdutosController', () => {
   let produtosController: ProdutosController;
-  let codigo: string;
+  let code: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const produtos: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `.env/.dev`,
+          envFilePath: `.env/.${process.env.ENVIRONMENT}`,
         }),
       ],
       controllers: [ProdutosController],
@@ -33,7 +33,7 @@ describe('ProdutosController', () => {
         valor: 100,
       };
       const result: IProduto = await produtosController.add(newProduto);
-      codigo = result.codigo;
+      code = result.code;
     });
   });
 
@@ -45,7 +45,7 @@ describe('ProdutosController', () => {
 
   describe('findOne', () => {
     it('O retorno deve ser um objeto classProdutos', async () => {
-      return await produtosController.findOne(codigo);
+      return await produtosController.findOne(code);
     });
   });
 
@@ -57,13 +57,13 @@ describe('ProdutosController', () => {
         tamanho: 'P',
         valor: 100,
       };
-      return await produtosController.update(codigo, produtoData);
+      return await produtosController.update(code, produtoData);
     });
   });
 
   describe('delete', () => {
     it('O retorno deve ser um objeto classProdutos', async () => {
-      return await produtosController.delete(codigo);
+      return await produtosController.delete(code);
     });
   });
 });
